@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票價格計算器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>股票合適購買價格計算器</h1>
+        <p>輸入股票代碼以計算其目前合理價、便宜價、昂貴價</p>
+        <form id="stockForm">
+            <label for="stockCode">股票代碼: (例如: 0000)</label>
+            <input type="text" id="stockCodeInput">
+            <br/>
+            <button type="button" id="calculate">計算</button>
+        </form>
+        <div id="stockData">
+            <!-- 這裡將顯示爬取的股票資料 -->
+        </div>
+    </div>
+    <script>
+        document.getElementById("calculate").addEventListener("click", function() {
+            var stockCode = document.getElementById("stockCodeInput").value;
+
+            // 發送股票代碼到 Flask 應用程式
+            fetch('/get_stock_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'stockCode': stockCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    var stockDataDiv = document.getElementById("stockData");
+                    stockDataDiv.innerHTML = ""; // 清空原有資料
+
+                    // 建立表格並添加爬取的資料
+                    var table = "<table><tr><th>股利所屬期間</th><th>現金股利</th></tr>";
+                    data.data.dividend_periods.forEach(function(period, index) {
+                        table += "<tr><td>" + period + "</td><td>" + data.data.cash_dividends[index] + "</td></tr>";
+                    });
+                    table += "</table>";
+
+                    stockDataDiv.innerHTML = table; // 將表格顯示在網頁上
+                } else {
+                    alert("資料獲取失敗");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+
