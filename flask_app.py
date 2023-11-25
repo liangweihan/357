@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
 
 def scrape_stock_data(stock_code):
     url = f'https://tw.stock.yahoo.com/quote/{stock_code}.TW/dividend'
@@ -20,9 +20,17 @@ def scrape_stock_data(stock_code):
         moneys = soup.find_all("div", class_="Fxg(1) Fxs(1) Fxb(0%) Ta(end) Mend($m-table-cell-space) Mend(0):lc Miw(62px)")
         cash_dividends = [float(money.text) for index, money in enumerate(moneys[2:], start=1) if index % 2 != 0][:5] if moneys else []
 
+        # 新增計算便宜價、合理價和昂貴價
+        cheap_price = round((sum(cash_dividends) * 20) / 7, 2)
+        fair_price = round((sum(cash_dividends) * 20) / 5, 2)
+        expensive_price = round((sum(cash_dividends) * 20) / 3, 2)
+
         data = {
             'dividend_periods': dividend_periods,
-            'cash_dividends': cash_dividends
+            'cash_dividends': cash_dividends,
+            'cheap_price': cheap_price,
+            'fair_price': fair_price,
+            'expensive_price': expensive_price
         }
 
         return {'success': True, 'data': data}
@@ -38,4 +46,3 @@ def get_stock_data():
 
 if __name__ == '__main__':
     app.run(debug=True)  # 運行在本地的 127.0.0.1:5000
-
