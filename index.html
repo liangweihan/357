@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>股票價格計算器</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- 略... -->
 </head>
 <body>
     <div class="container">
-        <h1>股票合適購買價格計算器</h1>
-        <p>輸入股票代碼以計算其目前合理價、便宜價、昂貴價</p>
+        <!-- 略... -->
         <form id="stockForm">
             <label for="stockCode">股票代碼: (例如: 0000)</label>
             <input type="text" id="stockCodeInput">
@@ -25,8 +20,8 @@
         document.getElementById("calculate").addEventListener("click", function() {
             var stockCode = document.getElementById("stockCodeInput").value;
 
-            // 發送股票代碼到 Flask 應用程式
-            fetch('/get_stock_data', {
+            // 發送股票代碼到後端 Python 應用程式
+            fetch('http://127.0.0.1:5000/get_stock_data', { // 替換成你後端的特定端點 URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -50,10 +45,13 @@
                 } else {
                     alert("資料獲取失敗");
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("發生錯誤，請查看控制台獲取更多資訊");
             });
         });
     </script>
 </body>
 </html>
-
 
