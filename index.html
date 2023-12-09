@@ -1,8 +1,52 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-        <!-- 略... -->
-        <style>
+    <meta charset="UTF-8">
+    <title>股票分析小工具</title>
+    <link rel="stylesheet" href="起始畫面.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #ffffff;
+            padding: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #404040;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
             body {
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
@@ -89,6 +133,16 @@
 </head>
     
 <body>
+    <!-- 導覽列 -->
+    <nav>
+        <h1>股票分析小工具</h1>
+        <ul>
+            <li><a href="https://liangweihan.github.io/project/">357公式</a></li>
+            <li><a href="page2.html">Page 2</a></li>
+            <li><a href="page3.html">Page 3</a></li>
+            <!-- Add more list items for additional pages -->
+        </ul>
+    </nav>    
     <div class="container">
         <!-- 略... -->
         <form id="stockForm">
