@@ -108,6 +108,14 @@
             <p>昂貴價: <span id="expensivePrice"></span></p>
         </div>
     </div>
+    <!-- 新增顯示便宜價、合理價和昂貴價的部分 -->
+    <div id="priceData">
+    <h3>運用公式</h3>
+    <p>便宜價: <span id="cheapPrice"></span> (根據357公式: 現金股利總和 ÷ 5 * 100 / 7)</p>
+    <p>合理價: <span id="fairPrice"></span> (根據357公式: 現金股利總和 ÷ 5 * 100 / 5)</p>
+    <p>昂貴價: <span id="expensivePrice"></span> (根據357公式: 現金股利總和 ÷ 5 * 100 / 3)</p>
+    </div>
+
     <script>
         document.getElementById("calculate").addEventListener("click", function() {
             var stockCode = document.getElementById("stockCodeInput").value;
