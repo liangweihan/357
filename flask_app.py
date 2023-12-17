@@ -63,35 +63,8 @@ def scrape_stock_data(stock_code):
 
         except requests.RequestException as e:
             return {'success': False, 'message': f'Request failed: {e}'}
-        
-    def scrape_revenue_data():
-        url = f'https://tw.stock.yahoo.com/quote/{stock_code}.TW/revenue'
-        response = requests.get(url)
 
-        try:
-            response.raise_for_status()
-            soup = BeautifulSoup(response.content, 'html.parser')
-            
-            # 从HTML中提取日期数据的示例
-            date_divs = soup.find_all("div", class_="W(65px) Ta(start)")
-            dates = [date.text.strip() for date in date_divs]
-
-            return {'success': True, 'data': dates}  # 修改此处返回所需数据
-
-        except requests.RequestException as e:
-            return {'success': False, 'message': f'Request failed: {e}'}
-
-    dividend_data = scrape_dividend_data()
-    revenue_data = scrape_revenue_data()
-
-    if dividend_data['success'] and revenue_data['success']:
-        combined_data = {
-            'dividend_data': dividend_data['data'],
-            'revenue_data': revenue_data['data']
-        }
-        return {'success': True, 'data': combined_data}
-    else:
-        return {'success': False, 'message': 'Failed to fetch data'}
+    return scrape_dividend_data()  # 回傳爬取的股票資料
 
 @app.route('/get_stock_data', methods=['POST'])
 def get_stock_data():
