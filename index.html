@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>股票分析小工具</title>
-    <link rel="stylesheet" href="起始畫面.css">
+    
+    <!-- 內部 CSS 樣式 -->
     <style>
+        /* 基本頁面風格 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -12,6 +14,7 @@
             padding: 0;
         }
 
+        /* 導覽列樣式 */
         nav {
             background-color: #2d2d2d;
             color: #ffffff;
@@ -39,6 +42,7 @@
             background-color: #404040;
         }
 
+        /* 主要容器樣式 */
         .container {
             width: 80%;
             margin: 20px auto;
@@ -48,6 +52,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        /* 表單樣式 */
         form {
             margin-bottom: 20px;
         }
@@ -77,6 +82,7 @@
             background-color: #0056b3;
         }
 
+        /* 表格樣式 */
         table {
             border-collapse: collapse;
             width: 100%;
@@ -93,6 +99,7 @@
             background-color: #f2f2f2;
         }
 
+        /* 顯示價格評估部分樣式 */
         #priceData {
             margin-top: 30px;
             padding: 15px;
@@ -122,23 +129,25 @@
     <nav>
         <h1>股票分析小工具</h1>
         <ul>
+            <!-- 導覽列連結 -->
             <li><a href="https://liangweihan.github.io/357/">357公式</a></li>
             <li><a href="https://liangweihan.github.io/dividend/">歷年股利</a></li>
             <li><a href="page3.html">Page 3</a></li>
-            <!-- Add more list items for additional pages -->
+            <!-- 可添加更多連結以指向其他頁面 -->
         </ul>
     </nav>
 
     <div class="container">
-        <!-- 略... -->
+        <!-- 表單用於輸入股票代碼 -->
         <form id="stockForm">
-            <label for="stockCode">股票代碼: (例如: 0000)</label>
+            <label for="stockCodeInput">股票代碼: (例如: 0000)</label>
             <input type="text" id="stockCodeInput">
-            <br/>
+            <br />
             <button type="button" id="calculate">計算</button>
         </form>
+
+        <!-- 用於顯示爬取的股票資料的表格 -->
         <div id="stockData">
-            <!-- 這裡將顯示爬取的股票資料 -->
             <table id="stockDataTable">
                 <thead>
                     <tr>
@@ -147,18 +156,20 @@
                     </tr>
                 </thead>
                 <tbody id="stockDataTableBody">
-                    <!-- Data will be filled here -->
+                    <!-- 此處將填入爬取的資料 -->
                 </tbody>
             </table>
         </div>
-        <!-- 新增顯示便宜價、合理價和昂貴價的部分 -->
+
+        <!-- 顯示便宜價、合理價和昂貴價 -->
         <div id="priceData">
             <h3>價格評估</h3>
             <p>便宜價: <span id="cheapPrice"></span></p>
             <p>合理價: <span id="fairPrice"></span></p>
             <p>昂貴價: <span id="expensivePrice"></span></p>
         </div>
-        <!-- 新增顯示運用公式的部分 -->
+
+        <!-- 顯示運用公式的部分 -->
         <div id="formulaData">
             <h3>運用公式</h3>
             <p>便宜價: <span id="cheapPriceFormula"></span> (根據357公式: 現金股利總和 ÷ 5 * 100 / 7)</p>
@@ -167,49 +178,52 @@
         </div>
     </div>
 
+    <!-- JavaScript 部分 -->
     <script>
-document.getElementById("calculate").addEventListener("click", function() {
-    var stockCode = document.getElementById("stockCodeInput").value;
+        // 當按鈕被點擊時觸發事件
+        document.getElementById("calculate").addEventListener("click", function () {
+            var stockCode = document.getElementById("stockCodeInput").value; // 獲取輸入的股票代碼
 
-    // 發送股票代碼到後端 Python 應用程式
-    fetch('http://127.0.0.1:5000/get_stock_data', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 'stockCode': stockCode })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            var stockDataDiv = document.getElementById("stockData");
-            stockDataDiv.innerHTML = ""; // 清空原有資料
+            // 發送 POST 請求到後端 Python 應用程式以獲取股票資料
+            fetch('http://127.0.0.1:5000/get_stock_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'stockCode': stockCode }) // 將股票代碼作為 JSON 發送到後端
+            })
+                .then(response => response.json()) // 處理從後端收到的 JSON 回應
+                .then(data => {
+                    if (data.success) {
+                        var stockDataDiv = document.getElementById("stockData");
+                        stockDataDiv.innerHTML = ""; // 清空原有資料
 
-            // 建立表格並添加爬取的資料
-            var table = "<table><tr><th>股利所屬期間</th><th>現金股利</th></tr>";
+                        // 建立表格並添加爬取的資料
+                        var table = "<table><tr><th>股利所屬期間</th><th>現金股利</th></tr>";
 
-            // 只顯示前五筆資料
-            for (var i = 0; i < 5; i++) {
-                table += "<tr><td>" + data.data.dividend_periods[i] + "</td><td>" + data.data.cash_dividends[i] + "</td></tr>";
-            }
+                        // 只顯示前五筆資料
+                        for (var i = 0; i < 5; i++) {
+                            table += "<tr><td>" + data.data.dividend_periods_357[i] + "</td><td>" + data.data.cash_dividends_357[i] + "</td></tr>";
+                        }
 
-            table += "</table>";
-            stockDataDiv.innerHTML = table; // 將表格顯示在網頁上
+                        table += "</table>";
+                        stockDataDiv.innerHTML = table; // 將表格顯示在網頁上
 
-            // 顯示便宜價、合理價和昂貴價
-            document.getElementById("cheapPrice").innerText = data.data.cheap_price;
-            document.getElementById("fairPrice").innerText = data.data.fair_price;
-            document.getElementById("expensivePrice").innerText = data.data.expensive_price;
-        } else {
-            alert("資料獲取失敗");
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("發生錯誤，請查看控制台獲取更多資訊");
-    });
-});
+                        // 顯示便宜價、合理價和昂貴價
+                        document.getElementById("cheapPrice").innerText = data.data.cheap_price;
+                        document.getElementById("fairPrice").innerText = data.data.fair_price;
+                        document.getElementById("expensivePrice").innerText = data.data.expensive_price;
+                    } else {
+                        alert("資料獲取失敗");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("發生錯誤，請查看控制台獲取更多資訊");
+                });
+        });
     </script>
 </body>
-</html>
 
+</html>
+3
