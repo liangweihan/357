@@ -132,6 +132,7 @@
             <!-- 導覽列連結 -->
             <li><a href="https://liangweihan.github.io/357/">357公式</a></li>
             <li><a href="https://liangweihan.github.io/dividend/">歷年股利</a></li>
+            <li><a href="https://liangweihan.github.io/kely/">凱利公式</a></li>
             <!-- 可添加更多連結以指向其他頁面 -->
         </ul>
     </nav>
@@ -150,6 +151,7 @@
             <table id="stockDataTable">
                 <thead>
                     <tr>
+                        <th>股利發放期間</th>
                         <th>股利所屬期間</th>
                         <th>現金股利</th>
                     </tr>
@@ -198,22 +200,26 @@
                         stockDataDiv.innerHTML = ""; // 清空原有資料
 
                         // 建立表格並添加爬取的資料
-                        var table = "<table><tr><th>股利所屬期間</th><th>現金股利</th></tr>";
+                        var table = "<table><tr><th>股利發放期間</th><th>股利所屬期間</th><th>現金股利</th></tr>";
 
                         // 只顯示前五筆資料
                         for (var i = 0; i < 5; i++) {
-                            table += "<tr><td>" + data.data.dividend_periods_357[i] + "</td><td>" + data.data.cash_dividends_357[i] + "</td></tr>";
+                            // 檢查資料是否存在
+                            if (data.data.dividend_periods_357[i] && data.data.cash_dividends_357[i]) {
+                                table += "<tr><td>" + (parseInt(data.data.dividend_periods_357[i]) + 1) + "</td><td>" + data.data.dividend_periods_357[i] + "</td><td>" + data.data.cash_dividends_357[i] + "</td></tr>";
+                            }
                         }
 
                         table += "</table>";
                         stockDataDiv.innerHTML = table; // 將表格顯示在網頁上
 
                         // 顯示便宜價、合理價和昂貴價
-                        document.getElementById("cheapPrice").innerText = data.data.cheap_price;
-                        document.getElementById("fairPrice").innerText = data.data.fair_price;
-                        document.getElementById("expensivePrice").innerText = data.data.expensive_price;
+                        document.getElementById("cheapPrice").innerText = data.data.cheap_price || 'N/A';
+                        document.getElementById("fairPrice").innerText = data.data.fair_price || 'N/A';
+                        document.getElementById("expensivePrice").innerText = data.data.expensive_price || 'N/A';
+
                     } else {
-                        alert("資料獲取失敗");
+                        alert("資料獲取失敗: " + data.message);
                     }
                 })
                 .catch(error => {
@@ -225,4 +231,3 @@
 </body>
 
 </html>
-3
